@@ -12,11 +12,11 @@ addons:
       - jq
 
 script:
-  - make ${TARGET} || true
+  - set -e
+  - make ${TARGET:-all}
 
 before_deploy:
-  - make all
-  - mkdir releases/ ${CLOUDS} ; cd releases/
+  - mkdir releases/; cd releases/
   - hub release download $(git describe --abbrev=0 --tags)
   - diff -qr . ${CLOUDS} ; export DIFF="$?"
   - git config --local user.name "TravisCI"
