@@ -1,0 +1,54 @@
+language: bash
+dist: xenial
+
+addons:
+  snaps:
+    - doctl
+    - hub --classic
+  apt:
+    packages:
+      - git
+      - tree
+      - jq
+
+script:
+  - make ${TARGET} || true
+
+before_deploy:
+  - make all
+  - mkdir releases/ ${CLOUDS} ; cd releases/
+  - hub release download $(git describe --abbrev=0 --tags)
+  - diff -qr . ${CLOUDS} ; export DIFF="$?"
+  - git config --local user.name "TravisCI"
+  - git config --local user.email "travis@null"
+  - git tag 0.0.$(date +'%Y%m%d')-${TRAVIS_BUILD_NUMBER} -m 'Update regions'
+
+env:
+  global:
+    - CLOUDS=/tmp/clouds
+    # Github
+    - secure: ys1rRcuFeNmFLO006KbgzLr3UalprB5lLLfDgMm62tDm2lrKD0YtDkHneNs80qWoz6b275z82rg5x0lEkd/Wu7f6iZJLS5xXP7AtLAkrgWXjk0kTw+HJ/Q/PWDwzk0HpNXuuL4SPGJzzpNvEWFTD+WRttDMDfoo4LoL2iGRVSqpR+xtjmz5QX0VhkZNPJGjubZCmxsnyHDuy320GtDsFM+Xix3dmkcq9kyVMlEh82SAqrfb+y8bccr9W7gFBsL1XIlVq7+oPfRGsnONaowQOsh3/wewXTb0BHECcAi+CT2D4gf0WoEqola8lGIdCryu2KmzJUxQwR5wou/7KZFjJVhfccPG2LXSLAhfMUwTe0xxOxTAVAYDwDP0p6wPrvAEfab6e35gdnNlk7UtD6mMPdaDi5d7UpBUCBC2soYyDYM/mRdh1JC5ATeu5ct5JbC0/sBe+fJm6J8GRAEBaPOZZj6CP6WjzpzE0o4MpY/rs8tsUi/G2shBl3N10hgcqoA1aE+cuRgzeQD6s/0dH524jfzLGWobbpctBtfsTEF/EG1oYqGUdD2fgYGidHtwAR0/yaGEvwOQpePKyeqZxYKitfKBf2kw6mtNhRx4O3QCYpQkEkerp98BfvT/Ve8cae7vOmx3JaDkWj1V62K/nVQ/6jgvXVBmMxxN55JQDO6kf+CA=
+    # DigitalOcean
+    - secure: "d7prhShj2LEkXoWTZbxyr97J8SHx7OGRy/y5xd9erUtA1RUx0pAkfitLGk6whvTUrZRCzsZqXQVKgffxmUKs6mwnMr4Z4gifBBxVQeoIQ0Ozuw4pgSIj2x3z4Qm+c8JwyuOxAjc8xE2xWhKWc5gre4gMcXF+8rtA/czvLBt/GdezU5EIj7OmNvWvvNctwdf2gItsnYO2a3xNMYVguB1Nh3y32HinAoZL2aRm/+uWTXq0zA9cmMpuaTOqWGaEl8STvaxMSPtp9KsJMzjgulDpPNJhMQQvDUC5rxGWJgQs3DaaUBEFJSjxZfYOqc7wd0+0mK7ygN736t/A1fOQIqc0Duib7WFoVr0Yy2iLdqoR18YGbXjJGU9C1hNxDVVKyDHBEL8nsNu1zVFP93WV0NmBh68TAfAfWfSo1PxLS/a2ycppEaoVLM0fHdw+pw/hCLqPoqC4BH9z/O8SUyhIR+I/9pdSrG2D1/G5HkDBMxiP7eztD1ETL+ugYEYk3vzCPVNdW+0VfKaIX5GmjomPP8OM2FatrL2f0i61TGDtkyQXuS0Io4zaTbLkp4ETDynHrCQbWIhR8UKGUiZB8WWR3DtEc45vsWQbICje1K0X6T01QHNrpgdSrRw6sTftd/cnMwj3SwYa5C79MLKm05to3W+yQiWpEm/+iCwJ1tsGajXKKoU="
+
+jobs:
+  include:
+    - stage: Test
+      env:
+        - TARGET="digitalocean"
+
+    - stage: Test
+      env:
+        - TARGET="ec2"
+
+    - stage: Deploy
+      if: env(DIFF) != 0
+      deploy:
+        provider: releases
+        api_key: ${GITHUB_TOKEN}
+        file_glob: true
+        file: ${CLOUDS}/*
+        skip_cleanup: true
+
+notifications:
+  email: true
