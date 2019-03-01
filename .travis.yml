@@ -16,9 +16,10 @@ script:
   - make ${TARGET:-all}
 
 before_deploy:
-  - mkdir releases/; cd releases/
+  - mkdir releases/
   - hub release download $(git describe --abbrev=0 --tags)
-  - diff -qr . ${CLOUDS} ; export DIFF="$?"
+  - mv *.json releases/
+  - diff -qr releases/ ${CLOUDS} ; export DIFF="$?"
   - git config --local user.name "TravisCI"
   - git config --local user.email "travis@null"
   - git tag 0.0.$(date +'%Y%m%d')-${TRAVIS_BUILD_NUMBER} -m 'Update regions'
