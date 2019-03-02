@@ -43,6 +43,7 @@ jobs:
         - TARGET="ec2"
 
     - stage: Deploy
+      script: echo ${DIFF}
       if: env(DIFF) != 0
       deploy:
         provider: releases
