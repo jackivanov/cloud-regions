@@ -18,7 +18,7 @@ script:
 before_deploy:
   - mkdir releases/
   - hub release download $(git describe --abbrev=0 --tags)
-  - mv *.json releases/
+  - mv *.json releases/ || true
   - diff -qr releases/ ${CLOUDS} ; export DIFF="$?"
   - git config --local user.name "TravisCI"
   - git config --local user.email "travis@null"
