@@ -19,7 +19,7 @@ before_deploy:
   - mkdir releases/
   - hub release download $(git describe --abbrev=0 --tags)
   - mv *.json releases/ || true
-  - diff -qr releases/ ${CLOUDS} ; export DIFF="$?"
+  - diff -qr releases/ ${CLOUDS} || export DIFF="true"
   - git config --local user.name "TravisCI"
   - git config --local user.email "travis@null"
   - git tag 0.0.$(date +'%Y%m%d')-${TRAVIS_BUILD_NUMBER} -m 'Update regions'
@@ -43,7 +43,7 @@ jobs:
         - TARGET="ec2"
 
     - stage: Deploy
-      if: env(DIFF) IS NOT 0
+      if: env(DIFF) IS present
       deploy:
         provider: releases
         api_key: ${GITHUB_TOKEN}
