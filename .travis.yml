@@ -44,6 +44,7 @@ jobs:
 
     - stage: Deploy
       if: env(DIFF) != "0"
+      env: DIFF=${DIFF}
       deploy:
         provider: releases
         api_key: ${GITHUB_TOKEN}
