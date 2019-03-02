@@ -22,7 +22,8 @@ before_deploy:
   - diff -qr releases/ ${CLOUDS} || export DIFF="true"
   - git config --local user.name "TravisCI"
   - git config --local user.email "travis@null"
-  - git tag 0.0.$(date +'%Y%m%d')-${TRAVIS_BUILD_NUMBER} -m 'Update regions'
+  - export TAG="0.0.$(date +'%Y%m%d')-${TRAVIS_BUILD_NUMBER}"
+  - git tag ${TAG} -m 'Update regions'
 
 env:
   global:
@@ -43,13 +44,15 @@ jobs:
         - TARGET="ec2"
 
     - stage: Deploy
-      if: env(DIFF) IS present
       deploy:
-        provider: releases
-        api_key: ${GITHUB_TOKEN}
-        file_glob: true
-        file: ${CLOUDS}/*
-        skip_cleanup: true
+        provider: script
+        script:
+          - echo ${DIFF}
+          - |
+            if [[ "$DIFF" == "true" ]]; do
+              ASSETS=$(ls -1 ${CLOUDS}/*.json | xargs -I{} -n1 echo -n "-a {} ")
+              hub release create ${ASSETS} ${TAG} -m 'Update regions'
+            done
 
 notifications:
   email: true
