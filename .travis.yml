@@ -43,7 +43,7 @@ jobs:
         - TARGET="ec2"
 
     - stage: Deploy
-      if: env(DIFF) NOT 0
+      if: env(DIFF) IS NOT 0
       deploy:
         provider: releases
         api_key: ${GITHUB_TOKEN}
