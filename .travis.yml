@@ -5,12 +5,12 @@ addons:
   snaps:
     - doctl
     - hub --classic
+    - aws-cli --classic
   apt:
     packages:
       - git
       - tree
       - jq
-      - awscli
 
 script:
   - set -e
