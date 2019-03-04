@@ -36,6 +36,7 @@ jobs:
     - stage: Deploy
       script:
         - set -x
+        - make all
         - mkdir releases/
         - hub release download $(git describe --abbrev=0 --tags)
         - mv *.json releases/ || true

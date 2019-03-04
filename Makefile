@@ -2,7 +2,7 @@ SHELL := /bin/bash
 CLOUDS ?= .
 
 pre:
-	mkdir -p $(CLOUDS)
+	mkdir -p $(CLOUDS) || true
 
 all: pre digitalocean ec2
 
