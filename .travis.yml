@@ -44,15 +44,13 @@ jobs:
         - TARGET="ec2"
 
     - stage: Deploy
-      deploy:
-        provider: script
-        script:
-          - echo ${DIFF}
-          - |
-            if [[ "$DIFF" == "true" ]]; do
-              ASSETS=$(ls -1 ${CLOUDS}/*.json | xargs -I{} -n1 echo -n "-a {} ")
-              hub release create ${ASSETS} ${TAG} -m 'Update regions'
-            done
+      script:
+        - echo ${DIFF}
+        - |
+          if [[ "$DIFF" == "true" ]]; do
+            ASSETS=$(ls -1 ${CLOUDS}/*.json | xargs -I{} -n1 echo -n "-a {} ")
+            hub release create ${ASSETS} ${TAG} -m 'Update regions'
+          done
 
 notifications:
   email: true
