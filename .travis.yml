@@ -10,6 +10,7 @@ addons:
       - git
       - tree
       - jq
+      - awscli
 
 script:
   - set -e
@@ -18,10 +19,14 @@ script:
 env:
   global:
     - CLOUDS=/tmp/clouds
+    - AWS_DEFAULT_REGION=eu-west-1
     # Github
     - secure: ys1rRcuFeNmFLO006KbgzLr3UalprB5lLLfDgMm62tDm2lrKD0YtDkHneNs80qWoz6b275z82rg5x0lEkd/Wu7f6iZJLS5xXP7AtLAkrgWXjk0kTw+HJ/Q/PWDwzk0HpNXuuL4SPGJzzpNvEWFTD+WRttDMDfoo4LoL2iGRVSqpR+xtjmz5QX0VhkZNPJGjubZCmxsnyHDuy320GtDsFM+Xix3dmkcq9kyVMlEh82SAqrfb+y8bccr9W7gFBsL1XIlVq7+oPfRGsnONaowQOsh3/wewXTb0BHECcAi+CT2D4gf0WoEqola8lGIdCryu2KmzJUxQwR5wou/7KZFjJVhfccPG2LXSLAhfMUwTe0xxOxTAVAYDwDP0p6wPrvAEfab6e35gdnNlk7UtD6mMPdaDi5d7UpBUCBC2soYyDYM/mRdh1JC5ATeu5ct5JbC0/sBe+fJm6J8GRAEBaPOZZj6CP6WjzpzE0o4MpY/rs8tsUi/G2shBl3N10hgcqoA1aE+cuRgzeQD6s/0dH524jfzLGWobbpctBtfsTEF/EG1oYqGUdD2fgYGidHtwAR0/yaGEvwOQpePKyeqZxYKitfKBf2kw6mtNhRx4O3QCYpQkEkerp98BfvT/Ve8cae7vOmx3JaDkWj1V62K/nVQ/6jgvXVBmMxxN55JQDO6kf+CA=
     # DigitalOcean
     - secure: "d7prhShj2LEkXoWTZbxyr97J8SHx7OGRy/y5xd9erUtA1RUx0pAkfitLGk6whvTUrZRCzsZqXQVKgffxmUKs6mwnMr4Z4gifBBxVQeoIQ0Ozuw4pgSIj2x3z4Qm+c8JwyuOxAjc8xE2xWhKWc5gre4gMcXF+8rtA/czvLBt/GdezU5EIj7OmNvWvvNctwdf2gItsnYO2a3xNMYVguB1Nh3y32HinAoZL2aRm/+uWTXq0zA9cmMpuaTOqWGaEl8STvaxMSPtp9KsJMzjgulDpPNJhMQQvDUC5rxGWJgQs3DaaUBEFJSjxZfYOqc7wd0+0mK7ygN736t/A1fOQIqc0Duib7WFoVr0Yy2iLdqoR18YGbXjJGU9C1hNxDVVKyDHBEL8nsNu1zVFP93WV0NmBh68TAfAfWfSo1PxLS/a2ycppEaoVLM0fHdw+pw/hCLqPoqC4BH9z/O8SUyhIR+I/9pdSrG2D1/G5HkDBMxiP7eztD1ETL+ugYEYk3vzCPVNdW+0VfKaIX5GmjomPP8OM2FatrL2f0i61TGDtkyQXuS0Io4zaTbLkp4ETDynHrCQbWIhR8UKGUiZB8WWR3DtEc45vsWQbICje1K0X6T01QHNrpgdSrRw6sTftd/cnMwj3SwYa5C79MLKm05to3W+yQiWpEm/+iCwJ1tsGajXKKoU="
+    # AWS
+    - secure: "kQVlor7AQCxBIvBM3M2FlxH02SLCoDL4jIii/RDvXCL/dFhBMKoO396+SD084kwpoaEaKDJlMy4h9jlNyK6Z805o5guyuG0dawqN+C52IvtlbRmFmroufzb8yDC4OAr+uUjIjmURvycACNVBQm5CtAKG+UC/MQZRM26/ppGjEPEJjdZVkBss1tfPPGag2tI81wv7/2HGGST8TmCyFzma6kCKuwPKxB3sgjunerinSI2XhlVzA0fS/v77v6Az1yUOQTo3aK93lL5jVDwMhjOueOZZitkkxP5eyFP5qfUVYK7x64UlSNf6TN2qPdUCTmo880palx8GOrPjN8lKfI25Huz5iQRPjrIfZwjFIlbM3VPjwWAP++BBLXj01BYozDH/sgv0KnEXQZxK/+ltsTXMIVleD8Pu8BR3rpyQgQTNVjOf3HEYh/3zjbADf4tTLrOwpGCPvQ0HWF5PbkQ+BC4+sUoUd1KJwfhcWmNG9zfffiH8qNy+d/93HW9K5ybnp+bB5etq2RSSrqLreNAOYJSXkyilQKKzuqiKIGmC4JmXS86OXUsG4mcLNMk1Wousfv6DnClL7Q7XX9goMtrcnqjNaF7zeJSxJ1fbPj2RGdUmVCn1oH/vEEwFCiTNmyzvXdwJnDUZgNEswaDvR9GOrxQ/nGStA8fWKwQDd6k5kguXFQQ="
+    - secure: "1NJJuvuKoMpNc/5mjXjNJ/WTQgWtgYyekKSWQD2RniLj6O8CYWbvOA93HdOjEhWRxDDZExes5gSerS6hbFw79CExiSKIKtwLLxaPzmu0MlEVg6ch9ak9PRCTTwfJqqo5mxoMF/QKMxgX2gGN+90VlsSfLhCl+HsJzToFzNF7bnqtNkwdBT06wOYzrnMTLV/Yh+9VT1dsLSBeRcK7guITsGr/NUDGveM4nacNfgGIp0EO69/wRsCV5wPwkk2yjCqSBOt/BoV4rCcEse4lPSm5S4dYAhgMfCfnN6hUkUlWMNvuyIKdvUmw1jlUd12yCxJEqr6fFRxNognEMjJhCrdAqlN+PGwcHCGD0Xa4BwPibYVestNfb6qlK8SXmPzEbNAu/hZ8i3sJP6gAl17qFM4GMIHj73C9EojTkG8CmOxjCx3Z7ZCWKfl+dQh2fmLF98IxddPHZx+xLaxucl7VJyPFeDhPrsB+Ziks0k78wb0XmvB+z+KbfSUqY1bqNtMnQc2Ng4dBZ9Bv/El4PDiar8D4Vo7OCQat/n3P+RSEX4PZ8wsSuY37CA7M7FW0ZO8pMLgrtBWNWyVdHChbagLv84Dq+e7p5P1qhmKGn/IYfUyCM7ogY/XGRW6KiGgSG5aGrA0Ookxdsep/kow0g93U81dxMACObotX6t6t0YmmhGiBiAQ="
 
 jobs:
   include:
@@ -35,10 +40,12 @@ jobs:
 
     - stage: Deploy
       script:
+        - set -e
         - make all
         - mkdir releases/
         - hub release download $(git describe --abbrev=0 --tags)
         - mv *.json releases/ || true
+        - jq -e .  ${CLOUDS}/*.json >/dev/null 2>&1
         - diff -qr releases/ ${CLOUDS} || export DIFF="true"
         - |
           if [[ "$DIFF" == "true" && $(ls -1 /tmp/clouds/ | wc -l) > 0 ]]; then
