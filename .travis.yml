@@ -15,16 +15,6 @@ script:
   - set -e
   - make ${TARGET:-all}
 
-before_deploy:
-  - mkdir releases/
-  - hub release download $(git describe --abbrev=0 --tags)
-  - mv *.json releases/ || true
-  - diff -qr releases/ ${CLOUDS} || export DIFF="true"
-  - git config --local user.name "TravisCI"
-  - git config --local user.email "travis@null"
-  - export TAG="0.0.$(date +'%Y%m%d')-${TRAVIS_BUILD_NUMBER}"
-  - git tag ${TAG} -m 'Update regions'
-
 env:
   global:
     - CLOUDS=/tmp/clouds
@@ -45,9 +35,17 @@ jobs:
 
     - stage: Deploy
       script:
+        - mkdir releases/
+        - hub release download $(git describe --abbrev=0 --tags)
+        - mv *.json releases/ || true
+        - diff -qr releases/ ${CLOUDS} || export DIFF="true"
+        - git config --local user.name "TravisCI"
+        - git config --local user.email "travis@null"
+        - export TAG="0.0.$(date +'%Y%m%d')-${TRAVIS_BUILD_NUMBER}"
+        - git tag ${TAG} -m 'Update regions'
         - echo ${DIFF}
         - |
-          if [[ "$DIFF" == "true" ]]; do
+          if [[ "$DIFF" == "true" ]]; then
             ASSETS=$(ls -1 ${CLOUDS}/*.json | xargs -I{} -n1 echo -n "-a {} ")
             hub release create ${ASSETS} ${TAG} -m 'Update regions'
           done
