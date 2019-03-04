@@ -35,19 +35,20 @@ jobs:
 
     - stage: Deploy
       script:
+        - set -x
         - mkdir releases/
         - hub release download $(git describe --abbrev=0 --tags)
         - mv *.json releases/ || true
         - diff -qr releases/ ${CLOUDS} || export DIFF="true"
         - |
-          if [[ "$DIFF" == "true" ]]; then
+          if [[ "$DIFF" == "true" && $(ls -1 /tmp/clouds/ | wc -l) > 0 ]]; then
             TAG="0.0.$(date +'%Y%m%d')-${TRAVIS_BUILD_NUMBER}"
             ASSETS=$(ls -1 ${CLOUDS}/*.json | xargs -I{} -n1 echo -n "-a {} ")
 
             git config --local user.name "TravisCI"
             git config --local user.email "travis@null"
             git tag ${TAG} -m 'Update regions'
-            
+
             hub release create ${ASSETS} ${TAG} -m 'Update regions'
           fi
 
